@@ -3,7 +3,7 @@
     /// <summary>
     /// This class contains the main information from a Sharepoint folder.
     /// </summary>
-    public class SharePointFolder
+    public class SPFolder
     {
         /// <summary>
         /// Get and set folder unique identifier.

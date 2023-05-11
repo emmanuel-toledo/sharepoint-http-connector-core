@@ -3,7 +3,7 @@
     /// <summary>
     /// This class contains the main information of a resource deleted in recycle bin in sharepoint site.
     /// </summary>
-    public class SharePointRecycledResource
+    public class SPRecycledResource
     {
         /// <summary>
         /// Get and set the Resource unique identifier.

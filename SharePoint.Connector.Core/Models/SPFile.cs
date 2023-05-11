@@ -3,7 +3,7 @@
     /// <summary>
     /// This class contains the main information from a Sharepoint file. 
     /// </summary>
-    public class SharePointFile
+    public class SPFile
     {
         /// <summary>
         /// Get and set Unique identifier.

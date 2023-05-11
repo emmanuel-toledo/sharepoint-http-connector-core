@@ -1,66 +1,43 @@
 ﻿namespace SharePoint.Connector.Core.Models.Configurations
 {
     /// <summary>
-    /// This class contains the definition of all the variables that will be used in for the 
-    /// connection to Sharepoint throughth a REST API.
+    /// This class contains the Context Configuration to create a new instance connection to the specific site.
     /// </summary>
     public class ContextConfiguration
     {
-        /** Authentication for sharepoint configuration. **/
         /// <summary>
-        /// Get and set the authentication URL for Sharepoint.
+        /// Get and Set Unique identifier.
         /// </summary>
-        public string AuthenticationUrl { get; set; } = "";
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
-        /// Get and set the Tenant unique identifier.
+        /// Get and Set Name.
         /// </summary>
-        public string TenantId { get; set; } = "";
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// Get and set the Client unique identifier.
+        /// Get and Set Tenant unique identifier.
         /// </summary>
-        public string ClientId { get; set; } = "";
+        public string TenantId { get; set; } = string.Empty;
 
         /// <summary>
-        /// Get and set the Client Secret unique identifer.
+        /// Get and Set Client unique identifier.
         /// </summary>
-        public string ClientSecret { get; set; } = "";
+        public string ClientId { get; set; } = string.Empty;
 
         /// <summary>
-        /// Get and set the Grant type.
+        /// Get and Set Client secret.
         /// </summary>
-        public string GrantType { get; set; } = "";
+        public string ClientSecret { get; set; } = string.Empty;
 
         /// <summary>
-        /// Get and set the Resource.
+        /// Get and Set Server relative URL.
         /// </summary>
-        public string Resource { get; set; } = "";
-
-        /** Rest API to sharepoint site configuration **/
-        /// <summary>
-        /// Get and set the Site unique identifier.
-        /// </summary>
-        public string SharepointSiteId { get; set; } = "";
+        //public string ServerRelativeURL { get; set; } = string.Empty;
 
         /// <summary>
-        /// Get and set the Site name.
+        /// Get and Set SharePoint site URL.
         /// </summary>
-        public string SharepointSiteName { get; set; } = "";
-
-        /// <summary>
-        /// Get and set the Sharepoint instance (organization sharepoint URL)
-        /// </summary>
-        public string SharepointInstanceUrl { get; set; } = "";
-
-        /// <summary>
-        /// Get and set the Sharepoint site URL.
-        /// </summary>
-        public string SharepointSiteUrl { get; set; } = "";
-
-        /// <summary>
-        /// Get and set the Site Relative URL.
-        /// </summary>
-        public string ServerRelativeUrl { get; set; } = "";
+        public string SharePointSiteURL { get; set; } = string.Empty;
     }
 }
