@@ -1,28 +1,52 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using SharePoint.Connector.Core.Persistences;
+using Microsoft.Extensions.DependencyInjection;
 using SharePoint.Connector.Core.Models.Configurations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SharePoint.Connector.Core.Business.Queries;
+using SharePoint.Connector.Core.Business.Commands;
 
 namespace SharePoint.Connector.Core.Microsoft.Extensions
 {
+    /// <summary>
+    /// Static class to add the use of this library as new Service using Dependency Injection
+    /// </summary>
     public static class ServiceExtensions
     {
-        internal static void CreateClients(this IServiceCollection service, ContextConfiguration configuration)
+        /// <summary>
+        /// Configure one SharePoint site with a HTTP client.
+        /// </summary>
+        /// <param name="services">Application service collection.</param>
+        /// <param name="configuration">Context configuration connection.</param>
+        public static void UseSharePointSite(this IServiceCollection services, ContextConfiguration configuration)
         {
-            service.AddHttpClient("authentication", client =>
-            {
-                client.BaseAddress = new Uri(configuration.AuthenticationUrl);
-                //var content = new[]
-                //{
-                //    new KeyValuePair<string, string>("resource", configuration.Resource),
-                //    new KeyValuePair<string, string>("client_id", configuration.ClientId),
-                //    new KeyValuePair<string, string>("client_secret", configuration.ClientSecret),
-                //    new KeyValuePair<string, string>("grant_type", configuration.GrantType),
-                //};
-            });
+            // Configure HTTP clients.
+            services.ConfigureClients(configuration);
+            // Configure Global variables as Service.
+            services.ConfigureAppSharePointContext(configuration);
+            // Configure Facades services.
+            services.ConfigureFacadeQueriesServices();
+            services.ConfigureFacadeCommandsServices();
+            // Configure HTTP query requests as services.
+            services.AddScoped<ISharePointQueries, SharePointQueries>();
+            // Configure HTTP command requests as services.
+            services.AddScoped<ISharePointCommands, SharePointCommands>();
+            // Configure main SharePoint Context service.
+            services.AddScoped<ISharePointContext, SharePointContext>();
+        }
+
+        /// <summary>
+        /// Configure one SharePoint site with a HTTP client.
+        /// </summary>
+        /// <param name="services">Application service collection.</param>
+        /// <param name="configurationSection">Application configuration section.</param>
+        public static void UseSharePointSite(this IServiceCollection services, IConfigurationSection configurationSection)
+        {
+            // Bind Configuration Section to model.
+            var configuration = new ContextConfiguration();
+            configurationSection.Bind(configuration, opts => opts.BindNonPublicProperties = true);
+            
+            // Execute main configuration method.
+            services.UseSharePointSite(configuration);
         }
     }
 }
