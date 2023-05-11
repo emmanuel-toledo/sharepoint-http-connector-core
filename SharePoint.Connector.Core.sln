@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePoint.Connector.Core", "SharePoint.Connector.Core\SharePoint.Connector.Core.csproj", "{820067BC-F197-4C0F-9CF8-0D55A33CF3B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharePoint.Connector.Core", "SharePoint.Connector.Core\SharePoint.Connector.Core.csproj", "{820067BC-F197-4C0F-9CF8-0D55A33CF3B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharePoint.Connector.Core.UT", "SharePoint.Connector.Core.UT\SharePoint.Connector.Core.UT.csproj", "{3655F4C3-7685-4E29-A9DD-055A4F3ECDE3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{820067BC-F197-4C0F-9CF8-0D55A33CF3B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{820067BC-F197-4C0F-9CF8-0D55A33CF3B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{820067BC-F197-4C0F-9CF8-0D55A33CF3B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3655F4C3-7685-4E29-A9DD-055A4F3ECDE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3655F4C3-7685-4E29-A9DD-055A4F3ECDE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3655F4C3-7685-4E29-A9DD-055A4F3ECDE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3655F4C3-7685-4E29-A9DD-055A4F3ECDE3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
