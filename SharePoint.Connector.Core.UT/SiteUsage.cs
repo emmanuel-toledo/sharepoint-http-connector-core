@@ -1,4 +1,6 @@
-﻿namespace SharePoint.Connector.Core.UT
+﻿using SharePoint.Connector.Core.Microsoft.Extensions.DependencyInjection;
+
+namespace SharePoint.Connector.Core.UT
 {
     [TestClass]
     public class SiteUsage
@@ -13,7 +15,7 @@
         public void Initialize()
         {
             _services = new ServiceCollection();
-            _services.UseSharePointSite(new ContextConfiguration()
+            _services.UseSharePointSite(new SPContextConfiguration()
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Site",
@@ -29,7 +31,7 @@
         [TestMethod]
         public async Task Get_Site_Usage()
         {
-            var response = await _context.SiteUsageAsync();
+            var response = await _context.GetSiteUsageAsync();
             Assert.IsNotNull(response);
         }
     }

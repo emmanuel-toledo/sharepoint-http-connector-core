@@ -1,3 +1,5 @@
+using SharePoint.Connector.Core.Microsoft.Extensions.DependencyInjection;
+
 namespace SharePoint.Connector.Core.UT
 {
     [TestClass]
@@ -11,7 +13,7 @@ namespace SharePoint.Connector.Core.UT
         public void Initialize()
         {
             _services = new ServiceCollection();
-            _services.UseSharePointSite(new ContextConfiguration()
+            _services.UseSharePointSite(new SPContextConfiguration()
             {
                 Id = Guid.NewGuid(),
                 Name = "Test Site",

@@ -1,15 +1,17 @@
-using SharePoint.Connector.Core.Microsoft.Extensions.DependencyInjection;
+﻿using SharePoint.Connector.Core.Microsoft.Extensions.DependencyInjection;
 
 namespace SharePoint.Connector.Core.UT
 {
     [TestClass]
-    public class LibraryDocuments
+    public class CreateFolder
     {
         private IServiceProvider _provider;
 
-        private IServiceCollection _services; 
+        private IServiceCollection _services;
 
-        [TestInitialize()] 
+        private ISharePointContext _context;
+
+        [TestInitialize()]
         public void Initialize()
         {
             _services = new ServiceCollection();
@@ -23,14 +25,16 @@ namespace SharePoint.Connector.Core.UT
                 SharePointSiteURL = "https://laureatelatammx.sharepoint.com/sites/uvm-expediente-digital-dev/"
             });
             _provider = _services.BuildServiceProvider();
+            _context = _provider.GetService<ISharePointContext>()!;
         }
 
         [TestMethod]
-        public async Task Get_Lirarby_Documents_Collection()
+        [DataRow("Shared Documents", "Documentos-Test")]
+        [DataRow("Shared Documents/Documentos-Test-2", "")]
+        public async Task Create_Folder(string relativeURL, string resourceName)
         {
-            var sharepointContext = _provider.GetService<ISharePointContext>()!;
-            var response = await sharepointContext.GetLibraryDocumentsAsync();
-            Assert.IsNotNull(response);
+            var folder = await _context.CreateFolderAsync(relativeURL, resourceName);
+            Assert.IsNotNull(folder);
         }
     }
 }
