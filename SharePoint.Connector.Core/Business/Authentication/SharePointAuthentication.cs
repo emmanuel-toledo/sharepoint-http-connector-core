@@ -3,7 +3,7 @@
 namespace SharePoint.Connector.Core.Business.Authentication
 {
     /// <summary>
-    /// This interface define SharePoint Authentication method.
+    /// This interface defines SharePoint Authentication method.
     /// </summary>
     internal interface ISharePointAuthentication
     {

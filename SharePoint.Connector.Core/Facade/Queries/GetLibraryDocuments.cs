@@ -7,30 +7,30 @@ namespace SharePoint.Connector.Core.Facade.Queries
     /// <summary>
     /// This interface contains the logic to get list of Library Documents that a SharePoint site has.
     /// </summary>
-    public interface ILibraryDocuments
+    public interface IGetLibraryDocuments
     {
         /// <summary>
         /// Function to get Library Documents collection.
         /// </summary>
         /// <returns>Library Documents collection.</returns>
-        Task<ICollection<SPLibraryDocuments>> LibraryDocumentsAsync();
+        Task<ICollection<SPLibraryDocuments>> SendAsync();
     }
 
     /// <summary>
     /// This class contains the logic to get list of Library Documents that a SharePoint site has.
     /// </summary>
-    public class LibraryDocuments : ILibraryDocuments
+    public class GetLibraryDocuments : IGetLibraryDocuments
     {
         private readonly ISharePointRequest _sharepoint;
 
-        public LibraryDocuments(ISharePointRequest sharepoint)
+        public GetLibraryDocuments(ISharePointRequest sharepoint)
             => _sharepoint = sharepoint;
 
         /// <summary>
         /// Function to get Library Documents collection.
         /// </summary>
         /// <returns>Library Documents collection.</returns>
-        public async Task<ICollection<SPLibraryDocuments>> LibraryDocumentsAsync()
+        public async Task<ICollection<SPLibraryDocuments>> SendAsync()
         {
             try
             {
@@ -41,6 +41,8 @@ namespace SharePoint.Connector.Core.Facade.Queries
                 request.Headers.Add("Accept", "application/json;odata=nometadata");
                 // Request information to SharePoint API.
                 var responseHttp = await _sharepoint.SendAsync(request);
+                if (!responseHttp.IsSuccessStatusCode)
+                    return dto;
                 var response = JObject.Parse(await responseHttp.Content.ReadAsStringAsync());
                 foreach(var item in response.Value<JArray>("value")!)
                 {

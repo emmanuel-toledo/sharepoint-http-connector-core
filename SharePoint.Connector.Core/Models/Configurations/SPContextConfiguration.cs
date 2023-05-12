@@ -3,7 +3,7 @@
     /// <summary>
     /// This class contains the Context Configuration to create a new instance connection to the specific site.
     /// </summary>
-    public class ContextConfiguration
+    public class SPContextConfiguration
     {
         /// <summary>
         /// Get and Set Unique identifier.

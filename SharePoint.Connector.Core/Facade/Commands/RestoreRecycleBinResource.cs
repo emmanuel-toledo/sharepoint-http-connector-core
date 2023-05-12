@@ -3,34 +3,34 @@
 namespace SharePoint.Connector.Core.Facade.Commands
 {
     /// <summary>
-    /// This interface define Restore Recycled Bin method.
+    /// This interface defines Restore Recycle Bin method.
     /// </summary>
-    public interface IRestoreFromRecycledBin
+    public interface IRestoreRecycleBinResource
     {
         /// <summary>
-        /// This function restore a resource from the Recycled Bin of a site.
+        /// This function restore a resource from the Recycle Bin of a site.
         /// </summary>
-        /// <param name="resourceId">Recycled Bin resource unique identifier.</param>
-        /// <returns>Recycled resource restored flag.</returns>
-        Task<bool> RestoreFromRecycledBinAsync(Guid resourceId);
+        /// <param name="resourceId">Recycle Bin resource unique identifier.</param>
+        /// <returns>Recycle resource restored flag.</returns>
+        Task<bool> SendAsync(Guid resourceId);
     }
 
     /// <summary>
-    /// This class implements Restore Recycled Bin method.
+    /// This class implements Restore Recycle Bin method.
     /// </summary>
-    public class RestoreFromRecycledBin : IRestoreFromRecycledBin
+    public class RestoreRecycleBinResource : IRestoreRecycleBinResource
     {
         private readonly ISharePointRequest _sharepoint;
 
-        public RestoreFromRecycledBin(ISharePointRequest sharepoint)
+        public RestoreRecycleBinResource(ISharePointRequest sharepoint)
             => _sharepoint = sharepoint;
 
         /// <summary>
-        /// This function restore a resource from the Recycled Bin of a site.
+        /// This function restore a resource from the Recycle Bin of a site.
         /// </summary>
-        /// <param name="resourceId">Recycled Bin resource unique identifier.</param>
-        /// <returns>Recycled resource restored flag.</returns>
-        public async Task<bool> RestoreFromRecycledBinAsync(Guid resourceId)
+        /// <param name="resourceId">Recycle Bin resource unique identifier.</param>
+        /// <returns>Recycle resource restored flag.</returns>
+        public async Task<bool> SendAsync(Guid resourceId)
         {
             try
             {

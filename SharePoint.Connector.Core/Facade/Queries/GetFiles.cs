@@ -1,52 +1,58 @@
 ﻿using Newtonsoft.Json.Linq;
+using SharePoint.Connector.Core.Models;
 using SharePoint.Connector.Core.Facade.Requests;
 
 namespace SharePoint.Connector.Core.Facade.Queries
 {
     /// <summary>
-    /// This is a Facade interface to execute function to validate if a resource exists.
+    /// This interface defines the method to get file information.
     /// </summary>
-    public interface IExistsResource
+    public interface IGetFiles
     {
         /// <summary>
-        /// Function to validate if a Resource exists in a specific path.
-        /// It can be a Folder or File.
+        /// Function to get files information from a relative url location.
         /// </summary>
         /// <param name="relativeURL">Relative resource path location.</param>
-        /// <returns>Exists resource flag.</returns>
-        Task<bool> SendAsync(string relativeURL);
+        /// <returns>File byte array content.</returns>
+        Task<ICollection<SPFile>> SendAsync(string relativeURL);
     }
 
     /// <summary>
-    /// This is a Facade class to execute function to validate if a resource exists.
+    /// This class implements the method to get file information.
     /// </summary>
-    public class ExistsResource : IExistsResource
+    public class GetFiles : IGetFiles
     {
         private readonly ISharePointRequest _sharepoint;
 
-        public ExistsResource(ISharePointRequest sharepoint)
+        public GetFiles(ISharePointRequest sharepoint)
             => _sharepoint = sharepoint;
 
         /// <summary>
-        /// Function to validate if a Resource exists in a specific path.
-        /// It can be a Folder or File.
+        /// Function to get files information from a relative url location.
         /// </summary>
         /// <param name="relativeURL">Relative resource path location.</param>
-        /// <returns>Exists resource flag.</returns>
-        public async Task<bool> SendAsync(string relativeURL)
+        /// <returns>File byte array content.</returns>
+        public async Task<ICollection<SPFile>> SendAsync(string relativeURL)
         {
             try
             {
+                var dto = new List<SPFile>();
                 // Configure method and endpoint request.
-                var request = new HttpRequestMessage(HttpMethod.Get, $"_api/web/GetFolderByServerRelativeUrl('{relativeURL}')/exists");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"_api/web/GetFolderByServerRelativeUrl('{relativeURL}')/files");
                 // Configure required headers.
                 request.Headers.Add("Accept", "application/json;odata=nometadata");
                 // Request information to SharePoint API.
                 var responseHttp = await _sharepoint.SendAsync(request);
                 if (!responseHttp.IsSuccessStatusCode)
-                    return false;
+                    return dto;
                 var response = JObject.Parse(await responseHttp.Content.ReadAsStringAsync());
-                return response.Value<bool>("value");
+                foreach (var item in response.Value<JArray>("value")!)
+                {
+                    var file = item.ToObject<SPFile>();
+                    if (file != null)
+                        dto.Add(file);
+                }
+                return dto;
             }
             catch
             {

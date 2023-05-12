@@ -4,17 +4,17 @@ using static SharePoint.Connector.Core.Business.Infrastructure.Helpers;
 namespace SharePoint.Connector.Core.Facade.Commands
 {
     /// <summary>
-    /// This interface define the Delete Resource method.
+    /// This interface defines the Delete Resource method.
     /// </summary>
     public interface IDeleteResource
     {
         /// <summary>
         /// Function to delete a SharePoint Resouce using RelativeURL.
         /// </summary>
-        /// <param name="endpoint">Resource path location.</param>
+        /// <param name="relativeURL">Resource's relative URL.</param>
         /// <param name="resourceType">Resource type</param>
         /// <returns>Success deleted</returns>
-        Task<bool> DeleteResourceAsync(string endpoint, ResourceType resourceType);
+        Task<bool> SendAsync(string relativeURL, ResourceType resourceType);
     }
 
     /// <summary>
@@ -30,10 +30,10 @@ namespace SharePoint.Connector.Core.Facade.Commands
         /// <summary>
         /// Function to delete a SharePoint Resouce using RelativeURL.
         /// </summary>
-        /// <param name="endpoint">Resource path location.</param>
+        /// <param name="relativeURL">Resource's relative URL.</param>
         /// <param name="resourceType">Resource type</param>
         /// <returns>Success deleted</returns>
-        public async Task<bool> DeleteResourceAsync(string endpoint, ResourceType resourceType)
+        public async Task<bool> SendAsync(string relativeURL, ResourceType resourceType)
         {
             try
             {
@@ -41,8 +41,8 @@ namespace SharePoint.Connector.Core.Facade.Commands
                 var url = string.Empty;
                 url = resourceType switch
                 {
-                    ResourceType.Folder => $"_api/web/GetFolderByServerRelativeUrl('{endpoint}')",
-                    ResourceType.File => $"_api/web/GetFileByServerRelativeUrl('{endpoint}')",
+                    ResourceType.Folder => $"_api/web/GetFolderByServerRelativeUrl('{relativeURL}')",
+                    ResourceType.File => $"_api/web/GetFileByServerRelativeUrl('{relativeURL}')",
                     _ => throw new ArgumentException("Resource type was not specified"),
                 };
                 // Configure method and endpoint request.

@@ -1,6 +1,6 @@
-﻿using SharePoint.Connector.Core.Business.Configurations;
+﻿using SharePoint.Connector.Core.Models;
 using SharePoint.Connector.Core.Facade.Commands;
-using SharePoint.Connector.Core.Microsoft.Extensions;
+using SharePoint.Connector.Core.Business.Configurations;
 using static SharePoint.Connector.Core.Business.Infrastructure.Helpers;
 
 namespace SharePoint.Connector.Core.Business.Commands
@@ -14,21 +14,29 @@ namespace SharePoint.Connector.Core.Business.Commands
 
         private readonly IDeleteResource _deleteResource;
 
-        private readonly IMoveToRecycledBin _moveToRecycledBin;
+        private readonly IMoveToRecycleBin _moveToRecycleBin;
 
-        private readonly IRestoreFromRecycledBin _restoreFromRecycledBin;
+        private readonly IRestoreRecycleBinResource _restoreRecycleBinResource;
+
+        private readonly ICreateFolder _createFolder;
+
+        private readonly IUploadFile _uploadFile;
 
         public SharePointCommands(
             ISharePointConfiguration configuration, 
             IDeleteResource deleteResource,
-            IMoveToRecycledBin moveToRecycledBin,
-            IRestoreFromRecycledBin restoreFromRecycledBin
+            IMoveToRecycleBin moveToRecycleBin,
+            IRestoreRecycleBinResource restoreRecycleBinResource,
+            ICreateFolder createFolder,
+            IUploadFile uploadFile
         )
         {
             _configuration = configuration;
             _deleteResource = deleteResource;
-            _moveToRecycledBin = moveToRecycledBin;
-            _restoreFromRecycledBin = restoreFromRecycledBin;
+            _moveToRecycleBin = moveToRecycleBin;
+            _restoreRecycleBinResource = restoreRecycleBinResource;
+            _createFolder = createFolder;
+            _uploadFile = uploadFile;
         }
 
         /// <summary>
@@ -41,13 +49,8 @@ namespace SharePoint.Connector.Core.Business.Commands
         {
             try
             {
-                var configuration = _configuration.Configurations.FirstOrDefault();
-                if (configuration is null)
-                    throw new NullReferenceException("SharePoint site configuration were not defined.");
-                var serverRelativeURL = configuration.GetRelativeURL();
-                if (string.IsNullOrEmpty(serverRelativeURL))
-                    throw new NotSupportedException("SharePoint site URL is not correctly defined for this service.");
-                return await _deleteResource.DeleteResourceAsync($"/{serverRelativeURL}/{relativeURL}", resourceType);
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _deleteResource.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceType);
             }
             catch
             {
@@ -66,13 +69,8 @@ namespace SharePoint.Connector.Core.Business.Commands
         {
             try
             {
-                var configuration = _configuration.Configurations.FirstOrDefault();
-                if (configuration is null)
-                    throw new NullReferenceException("SharePoint site configuration were not defined.");
-                var serverRelativeURL = configuration.GetRelativeURL();
-                if (string.IsNullOrEmpty(serverRelativeURL))
-                    throw new NotSupportedException("SharePoint site URL is not correctly defined for this service.");
-                return await _deleteResource.DeleteResourceAsync($"/{serverRelativeURL}/{relativeURL}/{resourceName}", resourceType);
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _deleteResource.SendAsync($"/{serverRelativeURL}/{relativeURL}/{resourceName}", resourceType);
             }
             catch
             {
@@ -81,27 +79,67 @@ namespace SharePoint.Connector.Core.Business.Commands
         }
 
         /// <summary>
-        /// This function move a resource to the Recycled Bin of a site.
+        /// This function move a resource to the Recycle Bin of a site.
         /// </summary>
-        /// <param name="endpoint">Resource path location.</param>
-        /// <returns>Recycled resource unique identifier.</returns>
-        public async Task<Guid> MoveToRecycledBinAsync(string endpoint)
+        /// <param name="relativeURL">Resource's relative URL.</param>
+        /// <returns>Recycle resource unique identifier.</returns>
+        public async Task<Guid> MoveResourceToRecycleBinAsync(string relativeURL)
         {
-            var configuration = _configuration.Configurations.FirstOrDefault();
-            if (configuration is null)
-                throw new NullReferenceException("SharePoint site configuration were not defined.");
-            var serverRelativeURL = configuration.GetRelativeURL();
-            if (string.IsNullOrEmpty(serverRelativeURL))
-                throw new NotSupportedException("SharePoint site URL is not correctly defined for this service.");
-            return await _moveToRecycledBin.MoveToRecycledBinAsync($"{ serverRelativeURL }/{ endpoint }");
+            try
+            {
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _moveToRecycleBin.SendAsync($"/{serverRelativeURL}/{relativeURL}");
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
-        /// This function restore a resource from the Recycled Bin of a site.
+        /// This function restore a resource from the Recycle Bin of a site.
         /// </summary>
-        /// <param name="resourceId">Recycled Bin resource unique identifier.</param>
-        /// <returns>Recycled resource restored flag.</returns>
-        public async Task<bool> RestoreFromRecycledBinAsync(Guid resourceId)
-            => await RestoreFromRecycledBinAsync(resourceId);
+        /// <param name="resourceId">Recycle Bin resource unique identifier.</param>
+        /// <returns>Recycle resource restored flag.</returns>
+        public async Task<bool> RestoreRecycleBinResourceByIdAsync(Guid resourceId)
+            => await _restoreRecycleBinResource.SendAsync(resourceId);
+
+        /// <summary>
+        /// Function to create a new folder in SharePoint.
+        /// </summary>
+        /// <param name="relativeURL">Folder relative URL location.</param>
+        /// <returns>SharePoint folder object.</returns>
+        public async Task<SPFolder?> CreateFolderAsync(string relativeURL)
+        {
+            try
+            {
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _createFolder.SendAsync($"/{serverRelativeURL}/{relativeURL}");
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// This method upload a file in a SharePoint site.
+        /// </summary>
+        /// <param name="relativeURL">Resource's relative path location.</param>
+        /// <param name="resourceName">Resource's name.</param>
+        /// <param name="content">Resource's content.</param>
+        /// <returns>SharePoint file object.</returns>
+        public async Task<SPFile?> UploadFileAsync(string relativeURL, string resourceName, byte[] content)
+        {
+            try
+            {
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _uploadFile.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceName, content);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

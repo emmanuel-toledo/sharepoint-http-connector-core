@@ -6,19 +6,19 @@ using SharePoint.Connector.Core.Facade.Queries;
 using SharePoint.Connector.Core.Facade.Requests;
 using SharePoint.Connector.Core.Models.Configurations;
 
-namespace SharePoint.Connector.Core.Microsoft.Extensions
+namespace SharePoint.Connector.Core.Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Internal static configuration to create different HTTP Clients.
     /// </summary>
-    internal static class InternalServiceConfiguration
+    internal static class InternalServiceExtensions
     {
         /// <summary>
         /// Function to configure HTTP clients to access to SharePoint API. This method create both authentication client and service client.
         /// </summary>
         /// <param name="services">Application service collection.</param>
         /// <param name="configuration">Application context configuration.</param>
-        internal static void ConfigureClients(this IServiceCollection services, ContextConfiguration configuration)
+        internal static void ConfigureClients(this IServiceCollection services, SPContextConfiguration configuration)
         {
             services.ConfigureAuthenticationClient(configuration);
 
@@ -42,9 +42,12 @@ namespace SharePoint.Connector.Core.Microsoft.Extensions
         internal static void ConfigureFacadeQueriesServices(this IServiceCollection services)
         {
             services.AddScoped<IExistsResource, ExistsResource>();
-            services.AddScoped<ILibraryDocuments, LibraryDocuments>();
-            services.AddScoped<ISiteUsage, SiteUsage>();
-            services.AddScoped<IRecycledBinResource, RecycledBinResource>();
+            services.AddScoped<IGetLibraryDocuments, GetLibraryDocuments>();
+            services.AddScoped<IGetSiteUsage, GetSiteUsage>();
+            services.AddScoped<IGetRecycleBinResourceById, GetRecycleBinResourceById>();
+            services.AddScoped<IGetFileContent, GetFileContent>();
+            services.AddScoped<IGetFile, GetFile>();
+            services.AddScoped<IGetFiles, GetFiles>();
         }
 
         /// <summary>
@@ -54,8 +57,10 @@ namespace SharePoint.Connector.Core.Microsoft.Extensions
         internal static void ConfigureFacadeCommandsServices(this IServiceCollection services)
         {
             services.AddScoped<IDeleteResource, DeleteResource>();
-            services.AddScoped<IMoveToRecycledBin, MoveToRecycledBin>();
-            services.AddScoped<IRestoreFromRecycledBin, RestoreFromRecycledBin>();
+            services.AddScoped<IMoveToRecycleBin, MoveToRecycleBin>();
+            services.AddScoped<IRestoreRecycleBinResource, RestoreRecycleBinResource>();
+            services.AddScoped<ICreateFolder, CreateFolder>();
+            services.AddScoped<IUploadFile, UploadFile>();
         }
 
         /// <summary>
@@ -63,11 +68,11 @@ namespace SharePoint.Connector.Core.Microsoft.Extensions
         /// </summary>
         /// <param name="services">Application service collection.</param>
         /// <param name="configuration">Application context configuration.</param>
-        internal static void ConfigureAppSharePointContext(this IServiceCollection services, ContextConfiguration configuration)
+        internal static void ConfigureAppSharePointContext(this IServiceCollection services, SPContextConfiguration configuration, bool throwExceptions)
         {
             services.AddSingleton<ISharePointConfiguration, SharePointConfiguration>(serviceProvider =>
             {
-                var service = new SharePointConfiguration(configuration);
+                var service = new SharePointConfiguration(configuration, throwExceptions);
                 return service;
             });
         }
@@ -77,16 +82,16 @@ namespace SharePoint.Connector.Core.Microsoft.Extensions
         /// </summary>
         /// <param name="services">Application service collection.</param>
         /// <param name="configuration">Application context configuration.</param>
-        internal static void ConfigureAuthenticationClient(this IServiceCollection services, ContextConfiguration configuration)
+        internal static void ConfigureAuthenticationClient(this IServiceCollection services, SPContextConfiguration configuration)
             => services.AddHttpClient("SharePointAuthClient", client =>
-                client.BaseAddress = new Uri($"https://accounts.accesscontrol.windows.net/{ configuration.TenantId }/"));
-        
+                client.BaseAddress = new Uri($"https://accounts.accesscontrol.windows.net/{configuration.TenantId}/"));
+
         /// <summary>
         /// Function to configure a HTTP Factory Client for authentication.
         /// </summary>
         /// <param name="services">Application service collection.</param>
         /// <param name="configuration">Application context configuration.</param>
-        internal static void ConfigureServiceClient(this IServiceCollection services, ContextConfiguration configuration, KeyValuePair<string, string>[] content)
+        internal static void ConfigureServiceClient(this IServiceCollection services, SPContextConfiguration configuration, KeyValuePair<string, string>[] content)
             => services.AddHttpClient("SharePointServiceClient", client =>
             {
                 // access the DI container.
@@ -96,7 +101,7 @@ namespace SharePoint.Connector.Core.Microsoft.Extensions
                 // Configure token for each request.
                 var token = authClient.GetAccessToken(content).Result;
                 // Add authorization if found.
-                if(!string.IsNullOrEmpty(token))
+                if (!string.IsNullOrEmpty(token))
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
                 client.BaseAddress = new Uri(configuration.SharePointSiteURL);
             });

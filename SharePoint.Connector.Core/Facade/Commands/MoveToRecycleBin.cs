@@ -4,45 +4,47 @@ using SharePoint.Connector.Core.Facade.Requests;
 namespace SharePoint.Connector.Core.Facade.Commands
 {
     /// <summary>
-    /// This interface define Move Recycled Bin method.
+    /// This interface defines Move Recycle Bin method.
     /// </summary>
-    public interface IMoveToRecycledBin
+    public interface IMoveToRecycleBin
     {
         /// <summary>
-        /// This function move a resource to the Recycled Bin of a site.
+        /// This function move a resource to the Recycle Bin of a site.
         /// </summary>
-        /// <param name="endpoint">Resource path location.</param>
-        /// <returns>Recycled resource unique identifier.</returns>
-        Task<Guid> MoveToRecycledBinAsync(string endpoint);
+        /// <param name="relativeURL">Resource's relative URL.</param>
+        /// <returns>Recycle resource unique identifier.</returns>
+        Task<Guid> SendAsync(string relativeURL);
     }
 
     /// <summary>
-    /// This class implements Move Recycled Bin method.
+    /// This class implements Move Recycle Bin method.
     /// </summary>
-    public class MoveToRecycledBin : IMoveToRecycledBin
+    public class MoveToRecycleBin : IMoveToRecycleBin
     {
         private readonly ISharePointRequest _sharepoint;
 
-        public MoveToRecycledBin(ISharePointRequest sharepoint)
+        public MoveToRecycleBin(ISharePointRequest sharepoint)
             => _sharepoint = sharepoint;
 
         /// <summary>
-        /// This function move a resource to the Recycled Bin of a site.
+        /// This function move a resource to the Recycle Bin of a site.
         /// </summary>
-        /// <param name="endpoint">Resource path location.</param>
-        /// <returns>Recycled resource unique identifier.</returns>
-        public async Task<Guid> MoveToRecycledBinAsync(string endpoint)
+        /// <param name="relativeURL">Resource's relative URL.</param>
+        /// <returns>Recycle resource unique identifier.</returns>
+        public async Task<Guid> SendAsync(string relativeURL)
         {
             try
             {
                 // Configure method and endpoint request.
-                var request = new HttpRequestMessage(HttpMethod.Post, $"_api/web/GetFolderByServerRelativeUrl('{ endpoint }')/recycle");
+                var request = new HttpRequestMessage(HttpMethod.Post, $"_api/web/GetFolderByServerRelativeUrl('{ relativeURL }')/recycle");
                 request.Content = null;
                 // Configure required headers.
                 request.Headers.Add("Accept", "application/json;odata=nometadata");
                 // Request information to SharePoint API.
                 var responseHttp = await _sharepoint.SendAsync(request);
-                // Get recycled bin resource unique identifier.
+                if (!responseHttp.IsSuccessStatusCode)
+                    return Guid.Empty;
+                // Get Recycle bin resource unique identifier.
                 var response = JObject.Parse(await responseHttp.Content.ReadAsStringAsync());
                 return response.Value<string>("value") != string.Empty ? new Guid(response.Value<string>("value")!) : Guid.Empty;
             }

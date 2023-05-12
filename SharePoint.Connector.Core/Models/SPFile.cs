@@ -13,12 +13,12 @@
         /// <summary>
         /// Get and set Check in comment.
         /// </summary>
-        public string CheckInComment { get; set; }
+        public string CheckInComment { get; set; } = string.Empty;
 
         /// <summary>
         /// Get and set Content tag.
         /// </summary>
-        public string ContentTag { get; set; }
+        public string ContentTag { get; set; } = string.Empty;
 
         /// <summary>
         /// Get and set existence.
@@ -28,7 +28,7 @@
         /// <summary>
         /// Get and set length.
         /// </summary>
-        public string Length { get; set; }
+        public string Length { get; set; } = string.Empty;
 
         /// <summary>
         /// Get and set level.
@@ -48,12 +48,12 @@
         /// <summary>
         /// Get and set Name.
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Get and set Server relative URL.
         /// </summary>
-        public string ServerRelativeUrl { get; set; }
+        public string ServerRelativeUrl { get; set; } = string.Empty;
 
         /// <summary>
         /// Get and set Created on datetime.
@@ -68,7 +68,7 @@
         /// <summary>
         /// Get and set Title.
         /// </summary>
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         /// <summary>
         /// Get and set UI version.
