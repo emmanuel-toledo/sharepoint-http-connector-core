@@ -16,15 +16,7 @@ namespace SharePoint.Connector.Core.UT
         public void Initialize()
         {
             _services = new ServiceCollection();
-            _services.UseSharePointSite(new SPContextConfiguration()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Test Site",
-                TenantId = "346a1d1d-e75b-4753-902b-74ed60ae77a1",
-                ClientId = "4a929590-75e1-4fda-b9d2-9f5acbf8251e@346a1d1d-e75b-4753-902b-74ed60ae77a1",
-                ClientSecret = "CqUv/BdSw0nLfqccLoPiFvQJDAbfXMvIoPpn+tw54rY=",
-                SharePointSiteURL = "https://laureatelatammx.sharepoint.com/sites/uvm-expediente-digital-dev/"
-            }, false);
+            _services.UseSharePointSite(SharePointConfiguration.Configuration);
             _provider = _services.BuildServiceProvider();
             _context = _provider.GetService<ISharePointContext>()!;
         }
