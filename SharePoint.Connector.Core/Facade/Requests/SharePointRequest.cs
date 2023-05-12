@@ -39,7 +39,7 @@ namespace SharePoint.Connector.Core.Facade.Requests
         public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             var responseHttp = await _client.SendAsync(request);
-            if (_configuration.ThrowExceptions)
+            if (!responseHttp.IsSuccessStatusCode && _configuration.ThrowExceptions)
                 await responseHttp.ValidateException();
             return responseHttp;
         }
