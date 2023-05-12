@@ -1,6 +1,6 @@
 ﻿using SharePoint.Connector.Core.Models.Configurations;
 
-namespace SharePoint.Connector.Core.Microsoft.Extensions
+namespace SharePoint.Connector.Core.Microsoft.Extensions.SharePoint
 {
     /// <summary>
     /// This class contains the main functions to work with different actions of SharePoint.Connector.Core library.
@@ -27,7 +27,7 @@ namespace SharePoint.Connector.Core.Microsoft.Extensions
         public static string GetRelativeURL(this SPContextConfiguration configuration)
         {
             string relativeURL = string.Join("/", configuration.SharePointSiteURL.Split("/").Skip(3).ToArray());
-            if(relativeURL.Substring(relativeURL.Length - 1) == "/")
+            if (relativeURL.Substring(relativeURL.Length - 1) == "/")
                 return relativeURL.Remove(relativeURL.Length - 1, 1);
             return relativeURL;
         }

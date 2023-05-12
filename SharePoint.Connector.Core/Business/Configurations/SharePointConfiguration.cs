@@ -1,4 +1,4 @@
-﻿using SharePoint.Connector.Core.Microsoft.Extensions;
+﻿using SharePoint.Connector.Core.Microsoft.Extensions.SharePoint;
 using SharePoint.Connector.Core.Models.Configurations;
 
 namespace SharePoint.Connector.Core.Business.Configurations

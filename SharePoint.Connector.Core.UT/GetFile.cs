@@ -1,5 +1,6 @@
 ﻿using SharePoint.Connector.Core.Models;
 using SharePoint.Connector.Core.Microsoft.Extensions.DependencyInjection;
+using SharePoint.Connector.Core.Microsoft.Extensions.SharePoint;
 
 namespace SharePoint.Connector.Core.UT
 {
