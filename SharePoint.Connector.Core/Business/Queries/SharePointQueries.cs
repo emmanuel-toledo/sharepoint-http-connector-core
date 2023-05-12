@@ -1,7 +1,6 @@
-﻿using SharePoint.Connector.Core.Business.Configurations;
+﻿using SharePoint.Connector.Core.Models;
 using SharePoint.Connector.Core.Facade.Queries;
-using SharePoint.Connector.Core.Microsoft.Extensions;
-using SharePoint.Connector.Core.Models;
+using SharePoint.Connector.Core.Business.Configurations;
 
 namespace SharePoint.Connector.Core.Business.Queries
 {
@@ -14,25 +13,37 @@ namespace SharePoint.Connector.Core.Business.Queries
 
         private readonly IExistsResource _existsResource;
 
-        private readonly ILibraryDocuments _libraryDocuments;
+        private readonly IGetLibraryDocuments _getLibraryDocuments;
 
-        private readonly ISiteUsage _siteUsage;
+        private readonly IGetSiteUsage _getSiteUsage;
 
-        private readonly IRecycledBinResource _recycledBinResource;
+        private readonly IGetRecycleBinResourceById _getRecycleBinResourceById;
+
+        private readonly IGetFileContent _getFileContent;
+
+        private readonly IGetFile _getFile;
+
+        private readonly IGetFiles _getFiles;
 
         public SharePointQueries(
             ISharePointConfiguration configuration, 
-            IExistsResource existsResource, 
-            ILibraryDocuments libraryDocuments, 
-            ISiteUsage siteUsage,
-            IRecycledBinResource recycledBinResource
+            IExistsResource existsResource,
+            IGetLibraryDocuments getLibraryDocuments, 
+            IGetSiteUsage getSiteUsage,
+            IGetRecycleBinResourceById getRecycleBinResourceById,
+            IGetFileContent getFileContent,
+            IGetFile getFile,
+            IGetFiles getFiles
         )
         {
             _configuration = configuration;
             _existsResource = existsResource;
-            _libraryDocuments = libraryDocuments;
-            _siteUsage = siteUsage;
-            _recycledBinResource = recycledBinResource;
+            _getLibraryDocuments = getLibraryDocuments;
+            _getSiteUsage = getSiteUsage;
+            _getRecycleBinResourceById = getRecycleBinResourceById;
+            _getFileContent = getFileContent;
+            _getFile = getFile;
+            _getFiles = getFiles;
         }
 
         /// <summary>
@@ -44,38 +55,9 @@ namespace SharePoint.Connector.Core.Business.Queries
         {
             try
             {
-                var configuration = _configuration.Configurations.FirstOrDefault();
-                if (configuration is null)
-                    throw new NullReferenceException("SharePoint site configuration were not defined.");
-                var serverRelativeURL = configuration.GetRelativeURL();
-                if (string.IsNullOrEmpty(serverRelativeURL))
-                    throw new NotSupportedException("SharePoint site URL is not correctly defined for this service.");
-                return await _existsResource.ExistsResourceAsync($"/{serverRelativeURL}/{relativeURL}");
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _existsResource.SendAsync($"/{serverRelativeURL}/{relativeURL}");
             } catch
-            {
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Function to validate if exists a file in Sharepoint using relative URL and resource name.
-        /// </summary>
-        /// <param name="relativeURL">Resource's relative url.</param>
-        /// <param name="resourceName">File name to validate.</param>
-        /// <returns>File existence.</returns>
-        public async Task<bool> ExistsResourceAsync(string relativeURL, string resourceName)
-        {
-            try
-            {
-                var configuration = _configuration.Configurations.FirstOrDefault();
-                if (configuration is null)
-                    throw new NullReferenceException("SharePoint site configuration were not defined.");
-                var serverRelativeURL = configuration.GetRelativeURL();
-                if (string.IsNullOrEmpty(serverRelativeURL))
-                    throw new NotSupportedException("SharePoint site URL is not correctly defined for this service.");
-                return await _existsResource.ExistsResourceAsync($"/{ serverRelativeURL }/{ relativeURL }/{ resourceName }");
-            }
-            catch
             {
                 throw;
             }
@@ -85,22 +67,78 @@ namespace SharePoint.Connector.Core.Business.Queries
         /// Function to get Library Documents collection.
         /// </summary>
         /// <returns>Library Documents collection.</returns>
-        public async Task<ICollection<SPLibraryDocuments>> LibraryDocumentsAsync()
-            => await _libraryDocuments.LibraryDocumentsAsync();
+        public async Task<ICollection<SPLibraryDocuments>> GetLibraryDocumentsAsync()
+            => await _getLibraryDocuments.SendAsync();
 
         /// <summary>
         /// Function to get the usage information of a SharePoint site.
         /// </summary>
         /// <returns>Site Usage model.</returns>
-        public async Task<SPSiteUsage?> SiteUsageAsync()
-            => await _siteUsage.SiteUsageAsync();
+        public async Task<SPSiteUsage?> GetSiteUsageAsync()
+            => await _getSiteUsage.SendAsync();
 
         /// <summary>
-        /// Function to get a resource from recycled bin using an unique identifier.
+        /// Function to get a resource from Recycle bin using an unique identifier.
         /// </summary>
-        /// <param name="resourceId">Recycled bin resource unique identifier.</param>
-        /// <returns>Recycled bin resource object.</returns>
-        public async Task<SPRecycledResource?> RecycledBinResourceAsync(Guid resourceId)
-            => await _recycledBinResource.RecycledBinResourceAsync(resourceId);
+        /// <param name="resourceId">Recycle bin resource unique identifier.</param>
+        /// <returns>Recycle bin resource object.</returns>
+        public async Task<SPRecycleResource?> GetRecycleBinResourceByIdAsync(Guid resourceId)
+            => await _getRecycleBinResourceById.SendAsync(resourceId);
+
+        /// <summary>
+        /// Function to download file content using relative path location and file name.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <param name="resourceName">Resource name.</param>
+        /// <returns>File byte array content.</returns>
+        public async Task<byte[]?> GetFileContentAsync(string relativeURL, string resourceName)
+        {
+            try
+            {
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _getFileContent.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceName);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Function to get file information using relative path location and file name.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <param name="resourceName">Resource name.</param>
+        /// <returns>File byte array content.</returns>
+        public async Task<SPFile?> GetFileAsync(string relativeURL, string resourceName)
+        {
+            try
+            {
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _getFile.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceName);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Function to get files information from a relative url location.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <returns>File byte array content.</returns>
+        public async Task<ICollection<SPFile>> GetFilesAsync(string relativeURL)
+        {
+            try
+            {
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                return await _getFiles.SendAsync($"/{serverRelativeURL}/{relativeURL}");
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

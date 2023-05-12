@@ -27,13 +27,43 @@ namespace SharePoint.Connector.Core.Persistences
         /// Function to get Library Documents collection.
         /// </summary>
         /// <returns>Library Documents collection.</returns>
-        Task<ICollection<SPLibraryDocuments>> LibraryDocumentsAsync();
+        Task<ICollection<SPLibraryDocuments>> GetLibraryDocumentsAsync();
 
         /// <summary>
         /// Function to get the usage information of a SharePoint site.
         /// </summary>
         /// <returns>Site Usage model.</returns>
-        Task<SPSiteUsage?> SiteUsageAsync();
+        Task<SPSiteUsage?> GetSiteUsageAsync();
+
+        /// <summary>
+        /// Fuction to retrive information of a resource that is in recycle bin using an unique identifier.
+        /// </summary>
+        /// <param name="resourceId">Resource unique identifier.</param>
+        /// <returns>Recycle bin resource information.</returns>
+        Task<SPRecycleResource?> GetRecycleBinResourceByIdAsync(Guid resourceId);
+
+        /// <summary>
+        /// Function to download file content using relative path location and file name.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <param name="resourceName">Resource name.</param>
+        /// <returns>File byte array content.</returns>
+        Task<byte[]?> GetFileContentAsync(string relativeURL, string resourceName);
+
+        /// <summary>
+        /// Function to get file information using relative path location and file name.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <param name="resourceName">Resource name.</param>
+        /// <returns>File byte array content.</returns>
+        Task<SPFile?> GetFileAsync(string relativeURL, string resourceName);
+
+        /// <summary>
+        /// Function to get files information from a relative url location.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <returns>File byte array content.</returns>
+        Task<ICollection<SPFile>> GetFilesAsync(string relativeURL);
 
         /// <summary>
         /// Function to delete a folder resource from a specific path.
@@ -48,22 +78,22 @@ namespace SharePoint.Connector.Core.Persistences
         /// <param name="relativeURL">Resource's relative url.</param>
         /// <returns>Deleted file from Sharepoint.</returns>
         Task<bool> DeleteFileAsync(string relativeURL);
-        
+
         /// <summary>
         /// Function to delete a file from a specific path and file name.
         /// </summary>
         /// <param name="relativeURL">Resource's relative url.</param>
-        /// <param name="resourceName">File name to delete.</param>
+        /// <param name="resourceName">Resource name.</param>
         /// <returns>Deleted file from Sharepoint.</returns>
         Task<bool> DeleteFileAsync(string relativeURL, string resourceName);
 
         /// <summary>
-        /// Function to move a site's resource to the recycled bin.
+        /// Function to move a site's resource to the Recycle bin.
         /// It can be a File or a Folder.
         /// </summary>
         /// <param name="relativeURL">Resource's relative url.</param>
-        /// <returns></returns>
-        Task<SPRecycledResource?> MoveToRecycledBinAsync(string relativeURL);
+        /// <returns>Recycled bin resource unique identifier.</returns>
+        Task<Guid> MoveResourceToRecycleBinAsync(string relativeURL);
 
         /// <summary>
         /// Fuction to restore a resource that is in recycle bin folder using an unique identifier.
@@ -72,76 +102,28 @@ namespace SharePoint.Connector.Core.Persistences
         /// <returns>Resource restored.</returns>
         Task<bool> RestoreRecycleBinResourceByIdAsync(Guid resourceId);
 
-
-
+        /// <summary>
+        /// Function to create a new folder in SharePoint.
+        /// </summary>
+        /// <param name="relativeURL">Folder relative URL location.</param>
+        /// <returns>SharePoint folder object.</returns>
+        Task<SPFolder?> CreateFolderAsync(string relativeURL);
 
         /// <summary>
-        /// Fuction to retrive information of a resource that is in recycle bin using an unique identifier.
+        /// Function to create a new folder in SharePoint.
         /// </summary>
-        /// <param name="resourceId">Resource unique identifier.</param>
-        /// <returns>Recycle bin resource information.</returns>
-        Task<SPRecycledResource?> GetRecycleBinResourceByIdAsync(Guid resourceId);
+        /// <param name="relativeURL">Folder relative URL location.</param>
+        /// <param name="resourceName">Folder name.</param>
+        /// <returns>SharePoint folder object.</returns>
+        Task<SPFolder?> CreateFolderAsync(string relativeURL, string resourceName);
 
         /// <summary>
-        /// Function to get (download) a file content as byte array from a specific path.
+        /// This method upload a file in a SharePoint site.
         /// </summary>
-        /// <param name="serverRelativeURL">Resource's relative url.</param>
-        /// <returns>Byte array with file content.</returns>
-        Task<byte[]?> GetFileContentAsync(string serverRelativeURL);
-
-        /// <summary>
-        /// Function to get (download) a file content as byte array from a specific path.
-        /// </summary>
-        /// <param name="serverRelativeURL">Resource's relative url.</param>
-        /// <param name="fileName">File name to delete.</param>
-        /// <returns>Byte array with file content.</returns>
-        Task<byte[]?> GetFileContentAsync(string serverRelativeURL, string fileName);
-
-        /// <summary>
-        /// Function to get (download) a file from a specific path.
-        /// </summary>
-        /// <param name="serverRelativeURL">Resource's relative url.</param>
-        /// <returns>Byte array with file content.</returns>
-        Task<SPFile?> GetFileAsync(string serverRelativeURL);
-
-        /// <summary>
-        /// Function to get (download) a file from a specific path.
-        /// </summary>
-        /// <param name="serverRelativeURL">Resource's relative url.</param>
-        /// <param name="fileName">File name to delete.</param>
-        /// <returns>Byte array with file content.</returns>
-        Task<SPFile?> GetFileAsync(string serverRelativeURL, string fileName);
-
-        /// <summary>
-        /// Function to create a folder in the main path of the site.
-        /// </summary>
-        /// <param name="folderName">Folder name to be created.</param>
-        /// <returns>Sharepoint folder information.</returns>
-        Task<SPFolder?> CreateFolderAsync(string folderName);
-
-        /// <summary>
-        /// Function to create a folder in a specific path of the site.
-        /// </summary>
-        /// <param name="serverRelativeUrl">Resource's relative url.</param>
-        /// <param name="folderName">Folder name to be created.</param>
-        /// <returns>Sharepoint folder information.</returns>
-        Task<SPFolder?> CreateFolderAsync(string serverRelativeUrl, string folderName);
-
-        /// <summary>
-        /// Function to upload a file in the main path of the site.
-        /// </summary>
-        /// <param name="fileName">File name to delete.</param>
-        /// <param name="content">Content file.</param>
-        /// <returns>Sharepoint file information.</returns>
-        Task<SPFile?> UploadFileAsync(string fileName, byte[] content);
-        
-        /// <summary>
-        /// Function to upload a file for a specific path.
-        /// </summary>
-        /// <param name="serverRelativeUrl">Resource's relative url.</param>
-        /// <param name="fileName">File name to delete.</param>
-        /// <param name="content">Content file.</param>
-        /// <returns>Sharepoint file information.</returns>
-        Task<SPFile?> UploadFileAsync(string serverRelativeUrl, string fileName, byte[] content);
+        /// <param name="relativeURL">Resource's relative path location.</param>
+        /// <param name="resourceName">Resource's name.</param>
+        /// <param name="content">Resource's content.</param>
+        /// <returns>SharePoint file object.</returns>
+        Task<SPFile?> UploadFileAsync(string relativeURL, string resourceName, byte[] content);
     }
 }

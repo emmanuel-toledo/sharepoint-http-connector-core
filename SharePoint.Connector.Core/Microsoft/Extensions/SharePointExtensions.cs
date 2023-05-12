@@ -24,7 +24,7 @@ namespace SharePoint.Connector.Core.Microsoft.Extensions
         /// </summary>
         /// <param name="configuration">Single SharePoint context configuration</param>
         /// <returns>Relative URL.</returns>
-        public static string GetRelativeURL(this ContextConfiguration configuration)
+        public static string GetRelativeURL(this SPContextConfiguration configuration)
         {
             string relativeURL = string.Join("/", configuration.SharePointSiteURL.Split("/").Skip(3).ToArray());
             if(relativeURL.Substring(relativeURL.Length - 1) == "/")

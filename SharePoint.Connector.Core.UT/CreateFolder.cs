@@ -3,7 +3,7 @@
 namespace SharePoint.Connector.Core.UT
 {
     [TestClass]
-    public class SiteUsage
+    public class CreateFolder
     {
         private IServiceProvider _provider;
 
@@ -21,10 +21,12 @@ namespace SharePoint.Connector.Core.UT
         }
 
         [TestMethod]
-        public async Task Get_Site_Usage()
+        [DataRow("Shared Documents", "Documentos-Test")]
+        [DataRow("Shared Documents/Documentos-Test-2", "")]
+        public async Task Create_Folder(string relativeURL, string resourceName)
         {
-            var response = await _context.GetSiteUsageAsync();
-            Assert.IsNotNull(response);
+            var folder = await _context.CreateFolderAsync(relativeURL, resourceName);
+            Assert.IsNotNull(folder);
         }
     }
 }
