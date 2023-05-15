@@ -25,6 +25,8 @@ namespace SharePoint.Http.Connector.Core.Business.Queries
 
         private readonly IGetFiles _getFiles;
 
+        private readonly IGetFolders _getFolders;
+
         public SharePointQueries(
             ISharePointConfiguration configuration, 
             IExistsResource existsResource,
@@ -33,7 +35,8 @@ namespace SharePoint.Http.Connector.Core.Business.Queries
             IGetRecycleBinResourceById getRecycleBinResourceById,
             IGetFileContent getFileContent,
             IGetFile getFile,
-            IGetFiles getFiles
+            IGetFiles getFiles,
+            IGetFolders getFolders
         )
         {
             _configuration = configuration;
@@ -44,6 +47,7 @@ namespace SharePoint.Http.Connector.Core.Business.Queries
             _getFileContent = getFileContent;
             _getFile = getFile;
             _getFiles = getFiles;
+            _getFolders = getFolders;
         }
 
         /// <summary>
@@ -56,6 +60,8 @@ namespace SharePoint.Http.Connector.Core.Business.Queries
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _existsResource.SendAsync($"{relativeURL}");
                 return await _existsResource.SendAsync($"/{serverRelativeURL}/{relativeURL}");
             } catch
             {
@@ -96,6 +102,8 @@ namespace SharePoint.Http.Connector.Core.Business.Queries
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _getFileContent.SendAsync($"{relativeURL}", resourceName);
                 return await _getFileContent.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceName);
             }
             catch
@@ -115,6 +123,8 @@ namespace SharePoint.Http.Connector.Core.Business.Queries
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _getFile.SendAsync($"{relativeURL}", resourceName);
                 return await _getFile.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceName);
             }
             catch
@@ -127,13 +137,35 @@ namespace SharePoint.Http.Connector.Core.Business.Queries
         /// Function to get files information from a relative url location.
         /// </summary>
         /// <param name="relativeURL">Relative resource path location.</param>
-        /// <returns>File byte array content.</returns>
+        /// <returns>List of files.</returns>
         public async Task<ICollection<SPFile>> GetFilesAsync(string relativeURL)
         {
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _getFiles.SendAsync($"{relativeURL}");
                 return await _getFiles.SendAsync($"/{serverRelativeURL}/{relativeURL}");
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Function to get folders information from a relative url location.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <returns>List of folders.</returns>
+        public async Task<ICollection<SPFolder>> GetFoldersAsync(string relativeURL)
+        {
+            try
+            {
+                var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _getFolders.SendAsync($"{relativeURL}");
+                return await _getFolders.SendAsync($"/{serverRelativeURL}/{relativeURL}");
             }
             catch
             {

@@ -26,18 +26,33 @@
         public bool Exists { get; set; }
 
         /// <summary>
-        /// Get and set Server relative URL.
+        /// Get and set is WOPI enabled.
         /// </summary>
-        public string ServerRelativeUrl { get; set; }
+        public bool IsWOPIEnabled { get; set; }
 
         /// <summary>
-        /// Get and set Created on date time.
+        /// Get and set prog ID.
+        /// </summary>
+        public string? ProgID { get; set; }
+
+        /// <summary>
+        /// Get and set server relative URL.
+        /// </summary>
+        public string ServerRelativeURL { get; set; }
+
+        /// <summary>
+        /// Get and set created on date time.
         /// </summary>
         public DateTime TimeCreated { get; set; }
 
         /// <summary>
-        /// Get and set Modified on date time.
+        /// Get and set modified on date time.
         /// </summary>
         public DateTime TimeLastModified { get; set; }
+
+        /// <summary>
+        /// Get and set welcome page.
+        /// </summary>
+        public string WelcomePage { get; set; }
     }
 }
