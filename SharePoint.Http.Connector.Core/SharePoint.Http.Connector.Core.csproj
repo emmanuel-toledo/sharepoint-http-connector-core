@@ -4,7 +4,28 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>SharePoint HTTP Connector Core</Title>
+	<version>1.0.1</version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Emmanuel Toledo</Authors>
+    <Description>SharePoint HTTP Connector Core is a library that can help you to create a connection with a SharePoint site using the native REST API of SharePoint.</Description>
+    <PackageIcon>SharePoint.HTTP.Connector.Core.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/emmanuel-toledo/sharepoint-http-connector-core</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>ASP.NET Core</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\SharePoint.HTTP.Connector.Core.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
