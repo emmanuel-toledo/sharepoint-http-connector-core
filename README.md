@@ -3,6 +3,8 @@
 
 ```SharePoint http connector core``` is a library developed in ```.NET C#``` that can help us manage API calls to our sites on SharePoint. The library provides a list of features that are useful for this integration.
 
+<img src="./SharePoint.HTTP.Connector.Core.png" alt="SharePoint HTTP Connector Core" width="100" />
+
 ## Overview
 
 ```SharePoint http connector core``` is an Open-Source project, remember that you can support it if you want.
@@ -29,7 +31,7 @@ Implement this library is pretty simple, you only need to import the ```Service 
 Do not forget that you will need configure your own ```App Information``` inside your ```appsettings.json``` file.
 
 ```
-"SharepointSite": {
+"SharePointSite": {
     "id": "00000000-0000-0000-0000-000000000000",
     "name": "Contoso site",
     "tenantId": "00000000-0000-0000-0000-000000000000",
@@ -44,7 +46,7 @@ Once your have done this step, you will need to implement the ```UseSharePointSi
 
 ```
 // Add configuration of authentication with microsoft.
-builder.Services.UseSharePointSite(builder.configuration.GetSection("SharepointSite"));
+builder.Services.UseSharePointSite(builder.configuration.GetSection("SharePointSite"));
 ```
 
 This extension method accept both ```IConfigurationSection``` and an instance of ```SPContextConfiguration``` class.
