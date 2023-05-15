@@ -102,7 +102,7 @@ There are many methods to interact with SharePoint inside this library.
 
 ## Repository
 
-- [SharePoint.Http.Connector.Core](https://github.com/emmanuel-toledo/sharepoint-connector-core)
+- [SharePoint.Http.Connector.Core](https://github.com/emmanuel-toledo/sharepoint-http-connector-core)
 
 ## Authors
 
