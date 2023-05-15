@@ -1,7 +1,7 @@
 
 # SharePoint HTTP Connector Core
 
-<img src="./SharePoint.HTTP.Connector.Core.png" alt="SharePoint HTTP Connector Core" width="150" />
+<img src="./SharePoint.HTTP.Connector.Core.png" alt="SharePoint HTTP Connector Core" width="120" />
 
 ```SharePoint http connector core``` is a library developed in ```.NET C#``` that can help us manage API calls to our sites on SharePoint. The library provides a list of features that are useful for this integration.
 
