@@ -50,6 +50,8 @@ namespace SharePoint.Http.Connector.Core.Business.Commands
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _deleteResource.SendAsync($"{relativeURL}", resourceType);
                 return await _deleteResource.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceType);
             }
             catch
@@ -70,6 +72,8 @@ namespace SharePoint.Http.Connector.Core.Business.Commands
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _deleteResource.SendAsync($"{relativeURL}/{resourceName}", resourceType);
                 return await _deleteResource.SendAsync($"/{serverRelativeURL}/{relativeURL}/{resourceName}", resourceType);
             }
             catch
@@ -88,6 +92,8 @@ namespace SharePoint.Http.Connector.Core.Business.Commands
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _moveToRecycleBin.SendAsync($"{relativeURL}");
                 return await _moveToRecycleBin.SendAsync($"/{serverRelativeURL}/{relativeURL}");
             }
             catch
@@ -114,6 +120,8 @@ namespace SharePoint.Http.Connector.Core.Business.Commands
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _createFolder.SendAsync($"{relativeURL}");
                 return await _createFolder.SendAsync($"/{serverRelativeURL}/{relativeURL}");
             }
             catch
@@ -134,6 +142,8 @@ namespace SharePoint.Http.Connector.Core.Business.Commands
             try
             {
                 var serverRelativeURL = _configuration.GetServerRelativeURL();
+                if (relativeURL.Contains(serverRelativeURL))
+                    return await _uploadFile.SendAsync($"{relativeURL}", resourceName, content);
                 return await _uploadFile.SendAsync($"/{serverRelativeURL}/{relativeURL}", resourceName, content);
             }
             catch

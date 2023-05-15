@@ -61,8 +61,15 @@ namespace SharePoint.Http.Connector.Core.Persistences
         /// Function to get files information from a relative url location.
         /// </summary>
         /// <param name="relativeURL">Relative resource path location.</param>
-        /// <returns>File byte array content.</returns>
+        /// <returns>List of files.</returns>
         Task<ICollection<SPFile>> GetFilesAsync(string relativeURL);
+
+        /// <summary>
+        /// Function to get folders information from a relative url location.
+        /// </summary>
+        /// <param name="relativeURL">Relative resource path location.</param>
+        /// <returns>List of folders.</returns>
+        Task<ICollection<SPFolder>> GetFoldersAsync(string relativeURL);
 
         /// <summary>
         /// Function to delete a folder resource from a specific path.
